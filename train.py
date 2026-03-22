@@ -3,6 +3,8 @@ import numpy as np
 import random
 from PIL import Image
 from perceptron import Perceptron
+import pickle
+from classifier import classify
 
 WIDTH = 5
 HEIGHT = 7
@@ -93,3 +95,18 @@ for epoch in range(epochs):
         for digit in range(10):
             target = 1 if label == digit else 0
             perceptrons[digit].train(x_noisy, target)
+
+# Zapisz perceptrony do pliku
+with open('perceptrons.pkl', 'wb') as f:
+    pickle.dump(perceptrons, f)
+
+# Test dokładności na oryginalnych danych
+correct = 0
+total = len(X)
+for x, label in zip(X, y):
+    pred = classify(perceptrons, x)
+    if pred == label:
+        correct += 1
+
+accuracy = correct / total
+print(f"Training accuracy: {accuracy:.2f}")
