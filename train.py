@@ -5,9 +5,12 @@ from PIL import Image
 from perceptron import Perceptron
 import pickle
 from classifier import classify
+from config import (RANDOM_SEED, WIDTH, HEIGHT, INPUT_SIZE, EPOCHS,
+                   NOISE_PROBABILITY, TRAINING_DATA_FOLDER, MODEL_FILE)
 
-WIDTH = 5
-HEIGHT = 7
+# set random seeds for reproducible results
+random.seed(RANDOM_SEED)
+np.random.seed(RANDOM_SEED)
 
 def load_image(path):
     img = Image.open(path).convert("RGBA")
@@ -33,7 +36,7 @@ def load_dataset(folder):
 
     return np.array(X), np.array(y)
 
-def add_noise(vec, prob=0.05):
+def add_noise(vec, prob=NOISE_PROBABILITY):
     noisy = vec.copy()
     for i in range(len(noisy)):
         if random.random() < prob:
@@ -42,45 +45,47 @@ def add_noise(vec, prob=0.05):
     return noisy
 
 
-X, y = load_dataset("training_set")
-
-perceptrons = []
-
-for i in range(10):
-    perceptrons.append(Perceptron(35))
-
-epochs = 50
-
-for epoch in range(epochs):
-    for x, label in zip(X, y):
-        x_noisy = add_noise(x)
-        for digit in range(10):
-            target = 1 if label == digit else 0
-            perceptrons[digit].train(x_noisy, target)
+if __name__ == "__main__":
+    # load training data
+    X, y = load_dataset(TRAINING_DATA_FOLDER)
+    print(f"Loaded {len(X)} training samples")
     
-    # Pocket Learning Algorithm: after each epoch, check if current weights are better
+    # initialize one perceptron per digit
+    perceptrons = [Perceptron(INPUT_SIZE) for _ in range(10)]
+    
+    print(f"Training for {EPOCHS} epochs with Pocket Learning Algorithm...")
+    
+    for epoch in range(EPOCHS):
+        # train each perceptron on all samples
+        for x, label in zip(X, y):
+            # add noise to prevent overfitting
+            x_noisy = add_noise(x)
+            
+            for digit in range(10):
+                target = 1 if label == digit else 0
+                perceptrons[digit].train(x_noisy, target)
+        
+        # Pocket Learning Algorithm: evaluate and store best weights
+        for digit in range(10):
+            y_binary = np.array([1 if label == digit else 0 for label in y])
+            perceptrons[digit].update_pocket(X, y_binary)
+        
+        if (epoch + 1) % 10 == 0:
+            print(f"Epoch {epoch + 1}/{EPOCHS} completed")
+    
     for digit in range(10):
-        # create binary targets for this digit: 1 if label == digit, else 0
-        y_binary = np.array([1 if label == digit else 0 for label in y])
-        # update pocket with best weights found so far
-        perceptrons[digit].update_pocket(X, y_binary)
-
-# restore best weights found during training (Pocket Algorithm)
-for digit in range(10):
-    perceptrons[digit].restore_best()
-
-# save the trained perceptrons to a file for later use in the GUI
-with open('perceptrons.pkl', 'wb') as f:
-    pickle.dump(perceptrons, f)
-
-# add a simple evaluation of the training accuracy by classifying the training samples 
-# and comparing to the true labels
-correct = 0
-total = len(X)
-for x, label in zip(X, y):
-    pred = classify(perceptrons, x)
-    if pred == label:
-        correct += 1
-
-accuracy = correct / total
-print(f"Training accuracy: {accuracy:.2f}")
+        perceptrons[digit].restore_best()
+    
+    with open(MODEL_FILE, 'wb') as f:
+        pickle.dump(perceptrons, f)
+    print(f"Model saved to {MODEL_FILE}")
+    
+    # evaluate training accuracy
+    correct = 0
+    for x, label in zip(X, y):
+        pred = classify(perceptrons, x)
+        if pred == label:
+            correct += 1
+    
+    accuracy = correct / len(X)
+    print(f"Training accuracy: {accuracy:.2%}")

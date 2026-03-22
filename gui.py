@@ -2,13 +2,7 @@ import tkinter as tk
 import pickle
 import numpy as np
 from classifier import classify, classify_detailed
-
-with open('perceptrons.pkl', 'rb') as f:
-    perceptrons = pickle.load(f)
-
-WIDTH = 5
-HEIGHT = 7
-CELL_SIZE = 50
+from config import WIDTH, HEIGHT, CELL_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, MODEL_FILE
 
 class DigitDrawer:
     def __init__(self, root):
@@ -85,11 +79,23 @@ class DigitDrawer:
             votes_text = "No votes"
         self.result_label.config(text=f"Predicted: {best} | {votes_text}")
 
+# load trained model
+try:
+    with open(MODEL_FILE, 'rb') as f:
+        perceptrons = pickle.load(f)
+except FileNotFoundError:
+    print(f"Error: {MODEL_FILE} not found. Run train.py first.")
+    perceptrons = None
+
 if __name__ == "__main__":
     root = tk.Tk()
-    root.geometry("700x450")
-    root.resizable(False, False) 
-    root.minsize(700, 450)
-    root.maxsize(700, 450)
-    app = DigitDrawer(root)
-    root.mainloop()
+    root.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
+    root.resizable(False, False)
+    root.minsize(WINDOW_WIDTH, WINDOW_HEIGHT)
+    root.maxsize(WINDOW_WIDTH, WINDOW_HEIGHT)
+    
+    if perceptrons is not None:
+        app = DigitDrawer(root)
+        root.mainloop()
+    else:
+        print("Cannot start GUI: model not loaded")

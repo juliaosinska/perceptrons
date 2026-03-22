@@ -1,9 +1,13 @@
 import numpy as np
+from config import RANDOM_SEED, LEARNING_RATE
+
+# Set random seed for reproducible weight initialization
+np.random.seed(RANDOM_SEED)
 
 class Perceptron:
 
     # initialize the perceptron with random weights and bias, and a specified learning rate
-    def __init__(self, input_size, learning_rate=0.1):
+    def __init__(self, input_size, learning_rate=LEARNING_RATE):
         self.weights = np.random.randn(input_size)
         self.bias = np.random.randn()
         self.lr = learning_rate
