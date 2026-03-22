@@ -82,6 +82,7 @@ if __name__ == "__main__":
     
     # evaluate training accuracy
     correct = 0
+    
     for x, label in zip(X, y):
         pred = classify(perceptrons, x)
         if pred == label:

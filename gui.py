@@ -56,6 +56,7 @@ class DigitDrawer:
     def toggle_pixel(self, event):
         j = event.x // CELL_SIZE
         i = event.y // CELL_SIZE
+
         if 0 <= i < HEIGHT and 0 <= j < WIDTH:
             self.grid[i][j] = 1 - self.grid[i][j]
             self.draw_grid()
@@ -67,16 +68,19 @@ class DigitDrawer:
             for j in range(WIDTH):
                 self.grid[i][j] = 0
                 self.canvas.itemconfig(self.rects[i][j], fill='white')
+
         self.result_label.config(text="Draw a digit and see prediction")
     
     # classify the current grid state and update the result label with the predicted digit
     def classify_digit(self):
         vector = np.array([self.grid[i][j] for i in range(HEIGHT) for j in range(WIDTH)])
         predictions, scores, best = classify_detailed(perceptrons, vector)
+
         if predictions:
             votes_text = f"Votes: {', '.join(map(str, predictions))}"
         else:
             votes_text = "No votes"
+            
         self.result_label.config(text=f"Predicted: {best} | {votes_text}")
 
 # load trained model

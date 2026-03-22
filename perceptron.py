@@ -1,7 +1,7 @@
 import numpy as np
 from config import RANDOM_SEED, LEARNING_RATE
 
-# Set random seed for reproducible weight initialization
+# set random seed for reproducible weight initialization
 np.random.seed(RANDOM_SEED)
 
 class Perceptron:
@@ -36,6 +36,7 @@ class Perceptron:
             prediction = self.predict(x)
             if prediction != target:
                 errors += 1
+
         return errors
     
     # update the weights and bias based on the error between the target output and the predicted output
@@ -51,6 +52,7 @@ class Perceptron:
     # Pocket Learning Algorithm: update best weights if current ones are better
     def update_pocket(self, X, y):
         current_errors = self.count_errors(X, y)
+        
         if current_errors < self.best_errors:
             self.best_errors = current_errors
             self.best_weights = self.weights.copy()

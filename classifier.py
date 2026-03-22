@@ -11,11 +11,16 @@ def classify_detailed(perceptrons, x):
     # returns all digits where predict() == 1, scores for all, and the best match
     predictions = []
     scores = []
+
     for i, p in enumerate(perceptrons):
         pred = p.predict(x)
         score = p.score(x)
+
         if pred == 1:
             predictions.append(i)
+
         scores.append(score)
+
     best = np.argmax(scores)
+    
     return predictions, scores, best
