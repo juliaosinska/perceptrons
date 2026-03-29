@@ -1,5 +1,3 @@
-# Configuration file for Perceptron Digit Classifier
-
 # random seeds for reproducible results
 RANDOM_SEED = 42
 

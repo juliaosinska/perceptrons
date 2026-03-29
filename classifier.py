@@ -4,11 +4,11 @@ def classify(perceptrons, x):
     # calculate the score for each perceptron using the score method
     scores = [p.score(x) for p in perceptrons]
 
-    # return the index of the perceptron with the highest score, which corresponds to the predicted class
+    # return the index of the perceptron with the highest score which corresponds to the predicted class
     return np.argmax(scores)
 
 def classify_detailed(perceptrons, x):
-    # returns all digits where predict() == 1, scores for all, and the best match
+    # returns all digits where predict() == 1, scores for all and the best match
     predictions = []
     scores = []
 
