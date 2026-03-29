@@ -78,10 +78,12 @@ class DigitDrawer:
 
         if predictions:
             votes_text = f"Votes: {', '.join(map(str, predictions))}"
+            predicted_text = f"{best}"
         else:
             votes_text = "No votes"
-            
-        self.result_label.config(text=f"Predicted: {best} | {votes_text}")
+            predicted_text = "None"
+
+        self.result_label.config(text=f"Predicted: {predicted_text} | {votes_text}")
 
 # load trained model
 try:

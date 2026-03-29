@@ -10,7 +10,7 @@ INPUT_SIZE = WIDTH * HEIGHT  # 35
 
 # training parameters
 LEARNING_RATE = 0.1
-EPOCHS = 50
+EPOCHS = 100
 NOISE_PROBABILITY = 0.05 
 
 # file paths
