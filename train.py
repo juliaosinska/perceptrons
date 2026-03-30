@@ -53,7 +53,7 @@ if __name__ == "__main__":
     # initialize one perceptron per digit
     perceptrons = [Perceptron(INPUT_SIZE) for _ in range(10)]
     
-    print(f"Training for {EPOCHS} epochs with Pocket Learning Algorithm...")
+    print(f"Training for {EPOCHS} epochs with Pocket Learning Algorithm")
     
     for epoch in range(EPOCHS):
         # train each perceptron on all samples
@@ -78,7 +78,6 @@ if __name__ == "__main__":
     
     with open(MODEL_FILE, 'wb') as f:
         pickle.dump(perceptrons, f)
-    print(f"Model saved to {MODEL_FILE}")
     
     # evaluate training accuracy
     correct = 0
